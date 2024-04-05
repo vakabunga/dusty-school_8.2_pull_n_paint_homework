@@ -1,26 +1,69 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import type { ChangeEvent } from 'react';
+
+import { ColorControl } from './components/ColorControl/ColorControl';
+import { Article } from './components/Article/Article';
+
 import './App.css';
 
-function App() {
+type Colors = {
+  [key: string]: string;
+};
+
+const initialValue: Colors = {
+  red: '0',
+  green: '0',
+  blue: '0',
+  opacity: '1000',
+};
+
+const App = () => {
+  const [textColor, setTextColor] = useState<Colors>(initialValue);
+  const [bgColor, setBgColor] = useState<Colors>(initialValue);
+
+  const handleTextColorChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setTextColor((prev) => {
+      prev[event.target.id] = event.target.value;
+      return { ...prev };
+    });
+  };
+
+  const handleBgColorChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setBgColor((prev) => {
+      prev[event.target.id] = event.target.value;
+      return { ...prev };
+    });
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ColorControl
+        assignments="Changer text color"
+        red={textColor.red}
+        green={textColor.green}
+        blue={textColor.blue}
+        opacity={textColor.opacity}
+        onChange={handleTextColorChange}
+      />
+      <ColorControl
+        assignments="Changer background color"
+        red={bgColor.red}
+        green={bgColor.green}
+        blue={bgColor.blue}
+        opacity={bgColor.opacity}
+        onChange={handleBgColorChange}
+      />
+
+      <Article
+        textColor={`rgba(${textColor.red}, ${textColor.green}, ${textColor.blue}, ${
+          Number(textColor.opacity) / 1000
+        })`}
+        bgColor={`rgba(${bgColor.red}, ${bgColor.green}, ${bgColor.blue}, ${
+          Number(bgColor.opacity) / 1000
+        })`}
+      />
     </div>
   );
-}
+};
 
-export default App;
+export { App };
